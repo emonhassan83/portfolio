@@ -1,11 +1,9 @@
 import "./Testimonial.css";
 
-//* Import Swiper React components
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
-import "swiper/css/autoplay"; // Import Swiper CSS for autoplay
-import { Pagination, Autoplay } from "swiper"; // Import Autoplay module
+import { Pagination, Autoplay } from "swiper/modules";
 import { useTheme } from "../../../lib/ThemeProvider";
 import { useGetAllReviewsQuery } from "../../../redux/features/reviewApi";
 

@@ -1,4 +1,5 @@
-import { Link, useNavigate } from "react-router-dom";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import PortfolioForm from "../../components/form/PortfolioForm";
 import toast, { Toaster } from "react-hot-toast";
 import PortfolioInput from "../../components/form/PortfolioInput";
@@ -9,7 +10,7 @@ import { verifyToken } from "../../utils/verifyToken";
 
 const LoginPage = () => {
   const [login] = useLoginMutation();
-  const navigate = useNavigate();
+  const router = useRouter();
   const dispatch = useDispatch();
 
   const onSubmit = async (data) => {
@@ -23,9 +24,9 @@ const LoginPage = () => {
         toast.success("User login successfully!");
         dispatch(setUser({ user: user, token: res.data.accessToken }));
         if (user.role === "admin") {
-          navigate("/dashboard/manage-projects");
+          router.push("/dashboard/manage-projects");
         } else {
-          navigate("/");
+          router.push("/");
         }
       }
     } catch (error) {

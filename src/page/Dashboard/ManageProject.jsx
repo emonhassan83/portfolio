@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import ManageProjectRow from "../../components/Dashboard/ManageProjectRow";
 import { useTheme } from "../../lib/ThemeProvider";
 import { useGetAllProjectsQuery } from "../../redux/features/projectApi";
@@ -13,7 +13,7 @@ const ManageProject = () => {
     return (
       <div className="mt-[25%]">
         <div className="my-4 text-center">
-          <Link to="/dashboard/add-project">
+          <Link href="/dashboard/add-project">
           <button className="btn btn-sm">Add</button>
           </Link>
         </div>

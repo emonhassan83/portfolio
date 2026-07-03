@@ -3,11 +3,11 @@ import PortfolioForm from "../../components/form/PortfolioForm";
 import PortfolioInput from "../../components/form/PortfolioInput";
 import PortfolioTextArea from "../../components/form/PortfolioTextarea";
 import { useAddProjectMutation } from "../../redux/features/projectApi";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 
 const AddProject = () => {
   const [addProject] = useAddProjectMutation();
-  const navigate = useNavigate();
+  const router = useRouter();
 
   const onSubmit = async (data) => {
     try {
@@ -17,7 +17,7 @@ const AddProject = () => {
 
       if (res.data.success) {
         toast.success("Project added successfully!");
-        navigate("/dashboard/manage-project");
+        router.push("/dashboard/manage-project");
       }
     } catch (error) {
       toast.error(error.message);

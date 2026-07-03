@@ -1,12 +1,20 @@
 import { useSelector } from "react-redux";
 import { useCurrentToken } from "../redux/features/auth/authSlice";
-import { Navigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 const ProtectedRoute = ({ children }) => {
   const token = useSelector(useCurrentToken);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!token) {
+      router.replace("/login");
+    }
+  }, [token, router]);
 
   if (!token) {
-    return <Navigate to="/login" replace={true} />;
+    return null;
   }
 
   return children;

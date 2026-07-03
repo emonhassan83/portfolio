@@ -1,7 +1,8 @@
 import toast, { Toaster } from "react-hot-toast";
 import PortfolioForm from "../../components/form/PortfolioForm";
 import PortfolioInput from "../../components/form/PortfolioInput";
-import { Link, useNavigate } from "react-router-dom";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useRegisterUserMutation } from "../../redux/features/userApi";
 import { verifyToken } from "../../utils/verifyToken";
 import { useDispatch } from "react-redux";
@@ -9,7 +10,7 @@ import { setUser } from "../../redux/features/auth/authSlice";
 
 const RegisterPage = () => {
   const [registerUser] = useRegisterUserMutation();
-  const navigate = useNavigate();
+  const router = useRouter();
   const dispatch = useDispatch();
 
   const onSubmit = async (data) => {
@@ -22,7 +23,7 @@ const RegisterPage = () => {
       if (res.success) {
         toast.success("User register successfully!");
         dispatch(setUser({ user: user, token: res.data.accessToken }));
-        navigate("/");
+        router.push("/");
       }
     } catch (error) {
       toast.error(error.message);

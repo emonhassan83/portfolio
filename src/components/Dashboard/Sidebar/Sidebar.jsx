@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { NavLink } from "react-router-dom";
+import Link from "next/link";
 import { AiOutlineBars } from "react-icons/ai";
 import { BsFillHouseAddFill } from "react-icons/bs";
 import { useTheme } from "../../../lib/ThemeProvider";
@@ -24,7 +24,7 @@ const Sidebar = () => {
           theme.mode === "dark" ? "text-gray-100 " : "text-gray-800 bg-gray-100"
         }`}
       >
-        {/* <Link to="/" className="cursor-pointer">
+        {/* <Link href="/" className="cursor-pointer">
           <div className="block cursor-pointer p-4 font-bold">
             <img className="w-40" src={""} alt="Dashboard Logo" />
           </div>
@@ -55,7 +55,7 @@ const Sidebar = () => {
           {/* Branding & Profile Info */}
           <div>
             <div className="w-full hidden md:flex justify-center items-center mx-auto">
-              {/* <Link to="/">
+              {/* <Link href="/">
                 <img className="w-36 -mt-4" src={"logo"} alt="Dashboard Logo" />
               </Link> */}
             </div>
@@ -84,20 +84,18 @@ const Sidebar = () => {
 
         <div>
           <hr />
-          <NavLink
-            to="/"
-            className={({ isActive }) =>
-              `flex items-center px-4 py-2 mt-5  transition-colors duration-300 transform  hover:bg-gray-300   hover:text-gray-700 ${
-                theme.mode === "dark"
-                  ? "text-gray-100 bg-[#1D232A]"
-                  : "text-gray-800 bg-gray-100"
-              } ${isActive ? "bg-gray-300" : ""}`
-            }
+          <Link
+            href="/"
+            className={`flex items-center px-4 py-2 mt-5  transition-colors duration-300 transform  hover:bg-gray-300   hover:text-gray-700 ${
+              theme.mode === "dark"
+                ? "text-gray-100 bg-[#1D232A]"
+                : "text-gray-800 bg-gray-100"
+            }`}
           >
             <BsFillHouseAddFill className="w-5 h-5" />
 
             <span className="mx-4 font-medium">Home</span>
-          </NavLink>
+          </Link>
         </div>
       </div>
     </>

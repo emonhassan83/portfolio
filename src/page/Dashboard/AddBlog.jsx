@@ -2,12 +2,12 @@ import toast, { Toaster } from "react-hot-toast";
 import PortfolioForm from "../../components/form/PortfolioForm";
 import PortfolioInput from "../../components/form/PortfolioInput";
 import PortfolioTextArea from "../../components/form/PortfolioTextarea";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 import { useAddBlogMutation } from "../../redux/features/blogApi";
 
 const AddBlog = () => {
   const [addBlog] = useAddBlogMutation();
-  const navigate = useNavigate();
+  const router = useRouter();
 
   const onSubmit = async (data) => {
     try {
@@ -16,7 +16,7 @@ const AddBlog = () => {
 
       if (res.data.success) {
         toast.success("Blog added successfully!");
-        navigate("/dashboard/manage-blogs");
+        router.push("/dashboard/manage-blogs");
       }
     } catch (error) {
       toast.error(error.message);

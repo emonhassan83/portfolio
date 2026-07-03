@@ -1,3 +1,5 @@
+"use client";
+
 import "./Navbar.css";
 import { FaBars } from "react-icons/fa";
 import { AiOutlineHome, AiOutlineUser } from "react-icons/ai";
@@ -8,9 +10,9 @@ import { MdOutlineHomeRepairService } from "react-icons/md";
 import { RxCross1 } from "react-icons/rx";
 import { IoIosLogIn } from "react-icons/io";
 import { CiLogout } from "react-icons/ci";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTheme } from "../../../lib/ThemeProvider";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import {
   logout,
@@ -25,12 +27,15 @@ const Navbar = () => {
   const { theme } = useTheme(); //* use for dark and light themes
   const token = useSelector(useCurrentToken);
 
-  window.addEventListener("scroll", function () {
-    const header = document.querySelector(".header");
-    //* when the scroll is higher than 200 viewport height, aee the scroll-header class to a tag with the header tag
-    if (this.scrollY >= 80) header.classList.add("scroll-header");
-    else header.classList.remove("scroll-header");
-  });
+  useEffect(() => {
+    const handleScroll = () => {
+      const header = document.querySelector(".header");
+      if (window.scrollY >= 80) header.classList.add("scroll-header");
+      else header.classList.remove("scroll-header");
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const handleLogout = () => {
     toast.success("User logged out successfully!");
@@ -45,7 +50,7 @@ const Navbar = () => {
     >
       <nav className="nav container">
         <Link
-          to="/"
+          href="/"
           className={`nav__logo ${
             theme.mode === "dark" ? "text-gray-100" : "text-dark-color"
           } `}
@@ -189,7 +194,7 @@ const Navbar = () => {
                   <CiLogout className="nav__icon" /> Logout
                 </button>
               ) : (
-                <Link to="/login">
+                <Link href="/login">
                   <button
                     className={`btn ${
                       theme.mode === "dark"

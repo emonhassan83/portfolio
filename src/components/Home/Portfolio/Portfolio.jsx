@@ -6,7 +6,7 @@ import { AiOutlineArrowRight } from "react-icons/ai";
 import { RxCross1 } from "react-icons/rx";
 import { VscDebugBreakpointLog } from "react-icons/vsc";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import { useTheme } from "../../../lib/ThemeProvider";
 
 const Portfolio = () => {

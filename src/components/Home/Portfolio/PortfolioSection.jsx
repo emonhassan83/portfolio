@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import { useTheme } from "../../../lib/ThemeProvider";
 import { useGetAllProjectsQuery } from "../../../redux/features/projectApi";
 import "./Portfolio.css";
@@ -32,7 +32,7 @@ const PortfolioSection = () => {
         }
       </div>
       <div className="text-center">
-        <Link to="/projects">
+        <Link href="/projects">
           <button className="btn bg-gray-900 hover:bg-gray-800 text-white rounded-xl gap-0 capitalize">
             Explore More
           </button>
