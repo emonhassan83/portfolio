@@ -16,7 +16,7 @@
     "jwt-decode": "^4.0.0",
     "localforage": "^1.10.0",
     "match-sorter": "^6.3.4",
-    "next": "^15.4.11",
+    "next": "^15.5.28",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.80.0",
@@ -35,10 +35,21 @@
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-react-refresh": "^0.3.5",
-    "postcss": "^8.5.16",
+    "postcss": "^8.5.32",
     "tailwindcss": "^3.4.19"
   },
   "overrides": {
-    "postcss": "^8.5.16"
+    "next": "^15.5.28",
+    "postcss": "^8.5.32",
+    "source-map-js": "^1.2.2",
+    "nanoid": "^3.3.18",
+    "js-yaml": "^4.3.2",
+    "brace-expansion": "^1.1.21",
+    "browserslist": "^4.29.5",
+    "colord": "^2.10.0",
+    "baseline-browser-mapping": "^2.11.34",
+    "postcss-selector-parser": "^7.1.7",
+    "sharp": "^0.35.5",
+    "minimatch": "^11.0.3"
   }
 }
