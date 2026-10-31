@@ -1,31 +1,77 @@
-# Logs
-logs
+# ==========================================
+# Portfolio Monorepo - Root .gitignore
+# ==========================================
+
+# Dependencies
+node_modules/
+*/node_modules/
+client/node_modules/
+server/node_modules/
+.pnp
+.pnp.js
+
+# Environment Variables & Secrets
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.env
+client/.env
+client/.env.local
+server/.env
+server/.env.local
+
+# Client Build Outputs (Next.js)
+client/.next/
+.next/
+client/out/
+out/
+client/build/
+build/
+
+# Server Build Outputs (TypeScript)
+server/dist/
+dist/
+
+# Logs & Debugging
+logs/
+server/logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
-.env
 
-node_modules
-dist
-dist-ssr
-*.local
+# Vercel & Deployment
+.vercel/
+client/.vercel/
+server/.vercel/
 
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
+# Testing & Coverage
+coverage/
+*.lcov
+.nyc_output
+
+# Editor & OS Metadata
 .DS_Store
+Thumbs.db
+.idea/
+.vscode/
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
 
-.vercel
-.next
+# Temporary Files, Caches & Transpilation Info
+.eslintcache
+.stylelintcache
+*.tsbuildinfo
+.turbo
+.parcel-cache
+scratch/
+brain/
 branch_structure.json
-temp_auto_push.bat
-temp_interactive_push.bat
+*.bat

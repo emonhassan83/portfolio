@@ -1,0 +1,28 @@
+{
+   "name": "Liam Hayes",
+   "email": "liam.hayes@example.com",
+   "password": "user123",
+   "contactNumber": "123-456-7890",
+   "address": "123 Main St, Springfield, IL 62701, USA"
+}
+{
+   "name": "Noah Sullivan",
+   "email": "noah.sullivan@example.com",
+   "password": "user123",
+   "contactNumber": "234-567-8901",
+   "address": "456 Elm St, Toronto, ON M4B 1B3, Canada"
+}
+{
+   "name": "Emma Foster",
+   "email": "emma.foster@example.com",
+   "password": "user123",
+   "contactNumber": "345-678-9012",
+   "address": "789 Maple St, Sydney, NSW 2000, Australia"
+}
+{
+   "name": "Jane Smith",
+   "email": "jane.smith@example.com",
+   "password": "user123",
+   "contactNumber": "453-678-9012",
+   "address": "789 Maple St, Sydney, NSW 2000, Australia"
+}
