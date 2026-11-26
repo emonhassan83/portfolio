@@ -16,8 +16,9 @@ import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import {
   logout,
-  useCurrentToken,
+  selectCurrentUser,
 } from "../../../redux/features/auth/authSlice";
+import { useLogoutMutation } from "../../../redux/features/auth/authApi";
 import toast from "react-hot-toast";
 
 const Navbar = () => {
@@ -25,7 +26,8 @@ const Navbar = () => {
   const [toggle, setToggle] = useState(false);
   const [activeNav, setActiveNav] = useState("#home");
   const { theme } = useTheme(); //* use for dark and light themes
-  const token = useSelector(useCurrentToken);
+  const token = useSelector(selectCurrentUser);
+  const [logoutRequest] = useLogoutMutation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -37,9 +39,10 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const handleLogout = () => {
-    toast.success("User logged out successfully!");
+  const handleLogout = async () => {
+    await logoutRequest();
     dispatch(logout());
+    toast.success("User logged out successfully!");
   };
 
   return (
@@ -194,7 +197,7 @@ const Navbar = () => {
                   <CiLogout className="nav__icon" /> Logout
                 </button>
               ) : (
-                <Link href="/login">
+                <Link href="/dashboard/login">
                   <button
                     className={`btn ${
                       theme.mode === "dark"

@@ -1,8 +1,6 @@
-"use client";
+import { redirect } from "next/navigation";
 
-import React from "react";
-import LoginPage from "../../page/login/login";
-
+// Old sign-in URL; the dashboard sign-in now lives at /dashboard/login.
 export default function Login() {
-  return <LoginPage />;
+  redirect("/dashboard/login");
 }

@@ -3,6 +3,7 @@ import httpStatus from "http-status";
 import sendResponse from "../../utils/sendResponse";
 import { UserService } from "./user.service";
 import { Request, Response } from "express";
+import AppError from "../../errors/AppError";
 
 const registerUser = catchAsync(async (req, res) => {
   const result = await UserService.registerUserIntoDB(req.body);
@@ -62,6 +63,10 @@ const changeUserStatus= catchAsync(async (req, res) => {
 
 const updateUserInfo = catchAsync(async (req, res) => {
   const id = req.params.id as string;
+  // Non-admins may only edit their own account.
+  if (req.user.role !== "admin" && req.user._id !== id) {
+    throw new AppError(httpStatus.FORBIDDEN, "You are not authorized!");
+  }
   const result = await UserService.updateUserInfoFromDB(id, req.body);
 
   sendResponse(res, {

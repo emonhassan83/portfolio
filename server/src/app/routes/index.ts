@@ -6,6 +6,7 @@ import { SkillRoutes } from '../modules/skills/skills.route';
 import { BlogRoutes } from '../modules/blogs/blogs.route';
 import { ReviewRoutes } from '../modules/review/review.route';
 import { QualificationRoutes } from '../modules/qualification/qualification.route';
+import { PortfolioRoutes } from '../modules/portfolio/portfolio.route';
 
 const router = Router();
 
@@ -37,6 +38,10 @@ const moduleRoutes = [
   {
     path: '/reviews',
     route: ReviewRoutes,
+  },
+  {
+    path: '/portfolio',
+    route: PortfolioRoutes,
   },
 ];
 

@@ -27,7 +27,7 @@ const AddBlog = () => {
   return (
     <div className="md:flex justify-center items-center md:h-[100vh]">
       <Toaster />
-      <div className="bg-gray-50 w-full h-[760px] rounded-md p-10 mx-auto shadow-md border-slate-950">
+      <div className="bg-base-200 w-full h-[760px] rounded-md p-10 mx-auto shadow-md border-slate-950">
         <h2 className="text-xl sm:text-2xl font-bold text-center mb-6">
           Add Blog
         </h2>

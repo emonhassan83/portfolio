@@ -1,8 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+/**
+ * Only non-sensitive profile info is kept here (for UI). The session itself is an
+ * httpOnly cookie the browser JavaScript cannot read; the server is the source of truth.
+ */
 const initialState = {
   user: null,
-  token: null,
 };
 
 const authSlice = createSlice({
@@ -10,13 +13,10 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     setUser: (state, action) => {
-      const { user, token } = action.payload;
-      state.user = user;
-      state.token = token;
+      state.user = action.payload;
     },
     logout: (state) => {
       state.user = null;
-      state.token = null;
     },
   },
 });
@@ -24,5 +24,4 @@ const authSlice = createSlice({
 export const { setUser, logout } = authSlice.actions;
 
 export default authSlice.reducer;
-export const useCurrentToken = (state) => state.auth.token;
 export const selectCurrentUser = (state) => state.auth.user;

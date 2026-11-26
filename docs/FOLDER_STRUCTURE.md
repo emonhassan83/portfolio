@@ -40,9 +40,11 @@ client/
 ├── public/                  # Static assets (Emon-resume.pdf, icons, images)
 └── src/
     ├── app/                 # Next.js App Router Root
-    │   ├── (main)/          # Public route group for visitors
-    │   │   ├── layout.jsx   # Shared public layout (Navbar, Footer, ScrollUp)
-    │   │   ├── page.jsx     # Landing page (Hero, About, Skills, Qualification, Projects, Reviews, Contact)
+    │   ├── (portfolio)/     # Home page "/" — Backend Engineer portfolio (own layout, fonts, SEO metadata)
+    │   │   ├── layout.jsx   # Portfolio shell: next/font, metadata, Navbar, Footer, theme script
+    │   │   └── page.jsx     # Composes Hero → Contact sections + JSON-LD
+    │   ├── (main)/          # Legacy public route group (blogs, projects)
+    │   │   ├── layout.jsx   # Legacy public layout (Navbar, Footer, ScrollUp)
     │   │   ├── blogs/       # Blog listing page
     │   │   └── projects/    # Projects showcase page
     │   ├── dashboard/       # Protected administrative dashboard route group
@@ -54,15 +56,25 @@ client/
     │   │   ├── manage-skills/
     │   │   ├── manage-qualifications/
     │   │   └── manage-reviews/
-    │   ├── login/           # Authentication login page
-    │   ├── register/        # Registration page
+    │   ├── dashboard/login/ # Admin sign-in (exempt from ProtectedRoute in dashboard/layout.jsx)
+    │   ├── login/           # Redirects to /dashboard/login
+    │   ├── register/        # Redirects to /dashboard/login (sign-up disabled)
     │   ├── layout.jsx       # Root HTML layout with fonts and metadata
     │   └── Providers.jsx    # Client providers (Redux Provider, PersistGate, ThemeProvider, Toast)
     ├── components/          # Reusable UI components
     │   ├── Dashboard/       # Sidebar and dashboard data tables
-    │   ├── Home/            # Landing page sections (About, Skills, Portfolio, Testimonial, Contact)
+    │   ├── Portfolio/       # Home page sections (Hero, About, Experience, Projects, Architecture, Stack, Practices, Credentials, GitHub, Contact) + ui/ primitives
+    │   ├── Home/            # Legacy landing page sections (no longer routed)
     │   ├── Shared/          # Navbar, Footer, ScrollUp, Buttons
     │   └── modal/           # Form modals for adding/updating entities
+    ├── data/portfolio.js    # Seed + fallback home page content (imported once from the dashboard)
+    ├── lib/getPortfolio.js  # Server loader: GET /api/portfolio (ISR 60s, tag "portfolio") with fallback
+    ├── lib/portfolioContent.js # buildContent() (shape for sections) + toImportPayload()
+    ├── app/api/revalidate/  # Secret-protected revalidateTag("portfolio"), called by the backend
+    ├── app/dashboard/portfolio/ # Profile & hero page + [resource] (experience|projects|stack|practices|credentials)
+    ├── app/dashboard/security/  # Two-factor, security question + password change
+    ├── components/Dashboard/Portfolio/ # Schema-driven form engine, resource manager, field schemas
+    ├── styles/portfolio.css # Home page design tokens and component styles, scoped under `.bk`
     ├── lib/                 # Utility libraries and ThemeProvider context
     ├── redux/               # State management
     │   ├── api/             # Centralized baseApi RTK Query service
@@ -95,13 +107,15 @@ server/
     │   │   ├── handleValidationError.ts
     │   │   └── handleZodError.ts
     │   ├── middleware/      # Express middlewares
-    │   │   ├── auth.ts      # JWT and RBAC guard middleware
+    │   │   ├── auth.ts      # Cookie session + tokenVersion + RBAC guard
+    │   │   ├── security.ts  # Body sanitiser, CSRF header check, rate limiters
     │   │   ├── globalErrorHandler.ts # Central error processing and formatting
     │   │   ├── notFound.ts  # 404 handler for undefined routes
-    │   │   └── validateRequest.ts # Zod schema validator middleware
+    │   │   └── validateRequest.ts # Zod validator ({ body, params, query, cookies }; `strip` option)
     │   ├── modules/         # Feature-based modular domain logic
     │   │   ├── Auth/        # Authentication, login, password management
     │   │   ├── blogs/       # Blog post management
+    │   │   ├── portfolio/   # Home page content: profile singleton + experience/projects/stack/practices/credentials
     │   │   ├── project/     # Portfolio projects management
     │   │   ├── qualification/ # Education and experience milestones
     │   │   ├── review/      # Testimonials and client feedback

@@ -1,0 +1,489 @@
+/*
+ * Backend portfolio design system.
+ * Everything is scoped under `.bk` so dashboard / legacy pages are unaffected.
+ */
+
+.bk {
+  --bk-bg: #0f0f0a;
+  --bk-surface: #161510;
+  --bk-raised: #1e1d17;
+  --bk-line: #2d2d26;
+  --bk-line-strong: #3c3e2e;
+  --bk-fg: #ebe8dd;
+  --bk-muted: #989689;
+  --bk-dim: #77756a;
+  --bk-accent: #c5f738;
+  --bk-accent-ink: #c5f738;
+  --bk-accent-soft: rgba(197, 247, 56, 0.08);
+  --bk-warn: #ffb547;
+  --bk-on-accent: #101006;
+
+  min-height: 100vh;
+  background: var(--bk-bg);
+  color: var(--bk-fg);
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  transition: background-color 0.45s ease, color 0.45s ease;
+}
+
+:root[data-bk-theme="light"] .bk {
+  --bk-bg: #f4f3ea;
+  --bk-surface: #ebeae1;
+  --bk-raised: #e0ded5;
+  --bk-line: #ceccc2;
+  --bk-line-strong: #b9b7a4;
+  --bk-fg: #222117;
+  --bk-muted: #444338;
+  --bk-dim: #6b6a5e;
+  --bk-accent: #466400;
+  --bk-accent-ink: #466400;
+  --bk-accent-soft: rgba(70, 100, 0, 0.08);
+  --bk-warn: #a35f00;
+  --bk-on-accent: #f6f5ef;
+}
+
+/* Film grain over the whole page */
+.bk::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  pointer-events: none;
+  opacity: 0.045;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Square corners everywhere: the design has no radius (avatars keep rounded-full) */
+.bk [class*="rounded-"]:not(.rounded-full) {
+  border-radius: 0;
+}
+
+.bk h1,
+.bk h2,
+.bk h3,
+.bk h4 {
+  color: var(--bk-fg);
+  font-family: var(--font-display), Georgia, serif;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+}
+
+.bk ::selection {
+  background: var(--bk-accent);
+  color: var(--bk-on-accent);
+}
+
+.bk a,
+.bk button,
+.bk input,
+.bk textarea {
+  font-family: inherit;
+}
+
+.bk :focus-visible {
+  outline: 2px solid var(--bk-accent-ink);
+  outline-offset: 3px;
+}
+
+.bk-mono {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.78rem;
+  letter-spacing: 0.01em;
+}
+
+.bk-accent {
+  color: var(--bk-accent-ink);
+}
+
+/* Dot grid behind the hero; drifts with the pointer (--px/--py set by PointerFx) */
+.bk-dotgrid {
+  background-image: radial-gradient(var(--bk-line) 1px, transparent 1px);
+  background-size: 28px 28px;
+  background-position: calc(var(--px, 0) * -18px) calc(var(--py, 0) * -12px);
+}
+.bk-dotgrid-fade {
+  background: linear-gradient(to bottom, var(--bk-bg), transparent, var(--bk-bg));
+}
+
+/* Skip link */
+.bk-skip {
+  position: absolute;
+  left: 1rem;
+  top: -100px;
+  z-index: 100;
+  padding: 0.5rem 0.9rem;
+  background: var(--bk-accent);
+  color: var(--bk-on-accent);
+}
+.bk-skip:focus {
+  top: 1rem;
+}
+
+/* Status marker: a blinking square */
+.bk-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  background: var(--bk-accent);
+  animation: bk-status-blink 1.6s step-end infinite;
+}
+@keyframes bk-status-blink {
+  0%, 60% { opacity: 1; }
+  61%, 100% { opacity: 0.15; }
+}
+
+/* Cards */
+:where(.bk-card) {
+  position: relative;
+  background: var(--bk-surface);
+  border: 1px solid var(--bk-line);
+  transition: border-color 0.25s ease, transform 0.25s ease, background-color 0.25s ease;
+}
+.bk-card-hover:hover {
+  border-color: var(--bk-line-strong);
+  transform: translateY(-2px);
+}
+
+/* Chips */
+:where(.bk-chip) {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.22rem 0.6rem;
+  border: 1px solid var(--bk-line);
+  color: var(--bk-muted);
+  background: transparent;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.72rem;
+  white-space: nowrap;
+}
+.bk-chip-accent {
+  color: var(--bk-accent-ink);
+  border-color: color-mix(in srgb, var(--bk-accent-ink) 35%, transparent);
+  background: var(--bk-accent-soft);
+}
+
+/* Buttons: flat, square, mono caps */
+:where(.bk-btn) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 48px;
+  padding: 0 1.75rem;
+  border: 1px solid var(--bk-line);
+  color: var(--bk-fg);
+  font-size: 0.875rem;
+  letter-spacing: 0.05em;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+/* Needs real specificity: `.bk a, .bk button` inherit the body font and preflight resets button text-transform */
+.bk .bk-btn {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  text-transform: uppercase;
+}
+/* Preflight zeroes padding on form controls and outranks :where(); this sits above it but below utilities */
+html button:where(.bk-btn) {
+  padding: 0 1.75rem;
+}
+.bk-btn:hover {
+  border-color: var(--bk-accent-ink);
+  color: var(--bk-accent-ink);
+}
+.bk-btn-primary {
+  background: var(--bk-accent);
+  border-color: var(--bk-accent);
+  color: var(--bk-on-accent);
+}
+.bk-btn-primary:hover {
+  background: var(--bk-fg);
+  border-color: var(--bk-fg);
+  color: var(--bk-bg);
+}
+
+/* Underlined arrow links */
+:where(.bk-link) {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  color: var(--bk-muted);
+  border-bottom: 1px solid transparent;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+.bk-link:hover {
+  color: var(--bk-accent-ink);
+  border-color: currentColor;
+}
+
+/* Section heading rule */
+.bk-rule {
+  height: 1px;
+  background: linear-gradient(90deg, var(--bk-line-strong), transparent);
+}
+
+/* Ticker */
+.bk-ticker-track {
+  display: flex;
+  width: max-content;
+  animation: bk-marquee 36s linear infinite;
+}
+.bk-ticker-track:hover {
+  animation-play-state: paused;
+}
+@keyframes bk-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* Terminal */
+.bk-term {
+  background: color-mix(in srgb, var(--bk-surface) 92%, transparent);
+  backdrop-filter: blur(6px);
+}
+.bk-caret {
+  display: inline-block;
+  width: 0.55em;
+  height: 1em;
+  margin-left: 2px;
+  vertical-align: -0.12em;
+  background: var(--bk-accent-ink);
+  animation: bk-blink 1s steps(1) infinite;
+}
+@keyframes bk-blink {
+  50% { opacity: 0; }
+}
+
+/* Reveal on scroll */
+.bk-reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.7s cubic-bezier(0.2, 0.7, 0.2, 1), transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.bk-reveal.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* Architecture diagram */
+.bk-diagram .bk-edge {
+  stroke: var(--bk-line-strong);
+  stroke-width: 1.2;
+  fill: none;
+}
+.bk-diagram .bk-flow {
+  stroke: var(--bk-accent-ink);
+  stroke-width: 1.4;
+  fill: none;
+  stroke-dasharray: 4 10;
+  animation: bk-dash 1.6s linear infinite;
+  opacity: 0.85;
+}
+@keyframes bk-dash {
+  to { stroke-dashoffset: -28; }
+}
+.bk-node rect {
+  fill: var(--bk-raised);
+  stroke: var(--bk-line-strong);
+}
+.bk-node text {
+  fill: var(--bk-fg);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 11px;
+}
+.bk-node.k-client rect { stroke: var(--bk-muted); }
+.bk-node.k-edge rect { stroke: var(--bk-dim); stroke-dasharray: 3 3; }
+.bk-node.k-service rect { stroke: var(--bk-accent-ink); fill: var(--bk-accent-soft); }
+.bk-node.k-async rect { stroke: var(--bk-warn); }
+.bk-node.k-data rect { stroke: var(--bk-fg); }
+.bk-node.k-external rect { stroke: var(--bk-dim); }
+.bk-node .bk-node-kind { fill: var(--bk-dim); font-size: 9px; }
+.bk-col-label {
+  fill: var(--bk-dim);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Stack tiles */
+.bk-tile img {
+  filter: grayscale(1);
+  opacity: 0.75;
+  transition: filter 0.25s ease, opacity 0.25s ease;
+}
+.bk-tile:hover img {
+  filter: none;
+  opacity: 1;
+}
+:root[data-bk-theme="light"] .bk-tile img {
+  filter: grayscale(1) brightness(0.4);
+}
+:root[data-bk-theme="light"] .bk-tile:hover img {
+  filter: none;
+}
+
+/* GitHub contribution heatmap: level 0 (none) to 4 (most), tinted from the accent */
+.bk-contrib-cell {
+  display: block;
+  background: var(--bk-raised);
+  transition: outline-color 0.15s ease;
+  outline: 1px solid transparent;
+  outline-offset: 1px;
+}
+.bk-contrib-cell[data-level="1"] { background: color-mix(in srgb, var(--bk-accent) 26%, var(--bk-raised)); }
+.bk-contrib-cell[data-level="2"] { background: color-mix(in srgb, var(--bk-accent) 48%, var(--bk-raised)); }
+.bk-contrib-cell[data-level="3"] { background: color-mix(in srgb, var(--bk-accent) 72%, var(--bk-raised)); }
+.bk-contrib-cell[data-level="4"] { background: var(--bk-accent); }
+.bk-contrib-cell:hover { outline-color: var(--bk-fg); }
+
+/* Form */
+:where(.bk-input) {
+  width: 100%;
+  min-height: 46px;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid var(--bk-line);
+  background: var(--bk-bg);
+  color: var(--bk-fg);
+  font-size: 0.95rem;
+  transition: border-color 0.2s ease;
+}
+html :is(input, textarea):where(.bk-input) {
+  padding: 0.7rem 0.9rem;
+}
+.bk-input::placeholder {
+  color: var(--bk-dim);
+}
+.bk-input:focus {
+  outline: none;
+  border-color: var(--bk-accent-ink);
+}
+
+/* ───────────────────────── Motion layer ───────────────────────── */
+
+/* Lenis smooth scroll: let Lenis own scrolling */
+html.bk-lenis {
+  scroll-behavior: auto;
+}
+html.bk-lenis body {
+  overscroll-behavior: none;
+}
+
+/* Softer, blurred reveal */
+.bk-reveal {
+  filter: blur(4px);
+  transition:
+    opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+    filter 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.bk-reveal.is-in {
+  filter: none;
+}
+
+/* Hero entrance: each block fades up in sequence (CSS only, server-rendered) */
+.bk-rise {
+  opacity: 0;
+  animation: bk-rise 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+@keyframes bk-rise {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* Hero parallax: layers shift a few pixels with the pointer (--px/--py in -1..1) */
+.bk-par-a {
+  translate: calc(var(--px, 0) * 10px) calc(var(--py, 0) * 6px);
+  will-change: translate;
+}
+.bk-par-b {
+  translate: calc(var(--px, 0) * -14px) calc(var(--py, 0) * -8px);
+  will-change: translate;
+}
+
+/* Card spotlight follows the pointer (--sx/--sy) */
+.bk-card {
+  isolation: isolate;
+}
+.bk-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  background: radial-gradient(380px circle at var(--sx, 50%) var(--sy, 50%), var(--bk-accent-soft), transparent 65%);
+}
+.bk-card:hover::after {
+  opacity: 1;
+}
+
+/* Robot mascot: full-viewport canvas that never takes pointer events */
+.bk-mascot {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  pointer-events: none;
+}
+.bk-mascot canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.bk-mascot-say {
+  position: absolute;
+  left: 0;
+  top: 0;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--bk-line);
+  background: var(--bk-bg);
+  color: var(--bk-fg);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 10px;
+  line-height: 1;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.bk-mascot-say[data-show="true"] { opacity: 1; }
+.bk-mascot-say[data-mood="startled"] {
+  border-color: var(--bk-accent-ink);
+  color: var(--bk-accent-ink);
+}
+.bk-mascot-say[data-mood="sleepy"] { color: var(--bk-muted); }
+
+/*
+ * Reduced motion: keep fades and hover feedback, drop movement:
+ * sliding content, flowing dashes and blinking.
+ * The tech ticker and the hero pointer parallax stay on by the owner's choice:
+ * both are slow and small (a few pixels), and the ticker pauses on hover.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .bk-reveal {
+    transform: none;
+    filter: none;
+    transition: opacity 0.6s ease;
+  }
+  .bk-rise {
+    animation-name: bk-fade-in;
+    animation-duration: 0.6s;
+  }
+  .bk-diagram .bk-flow,
+  .bk-dot {
+    animation: none;
+  }
+  .bk-card-hover:hover {
+    transform: none;
+  }
+}
+@keyframes bk-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

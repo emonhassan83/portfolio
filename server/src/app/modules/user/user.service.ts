@@ -1,31 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import httpStatus from 'http-status';
-import config from '../../config';
 import AppError from '../../errors/AppError';
-import { createToken } from '../Auth/auth.utils';
 import { TReqUser, TUser } from './user.interface';
 import { User } from './user.model';
 import QueryBuilder from '../../builder/QueryBuilder';
 
+/** Admin-only: creates an account. New accounts always start with the `user` role. */
 const registerUserIntoDB = async (payload: TUser) => {
-  const result = await User.create(payload);
-
-  //* create token and sent to the client
-  const jwtPayload = {
-    _id: result._id,
-    email: result.email,
-    role: result.role,
-  };
-
-  const accessToken = createToken(
-    jwtPayload,
-    config.jwt_access_secret as string,
-    config.jwt_access_expires_in as string,
-  );
-
-  return {
-    accessToken,
-  };
+  const result = await User.create({ ...payload, role: 'user' });
+  return result;
 };
 
 const getAllUsersFromDB = async (query: Record<string, unknown>) => {

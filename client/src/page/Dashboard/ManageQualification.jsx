@@ -1,6 +1,5 @@
 import { useState } from "react";
 import ManageQualificationRow from "../../components/Dashboard/ManageQualificationRow";
-import { useTheme } from "../../lib/ThemeProvider";
 import { useGetAllQualificationsQuery } from "../../redux/features/qualificationApi";
 import PortfolioModal from "../../components/modal/PortfolioGenericModal";
 import AddQualificationModal from "../../components/modal/AddQualificationModal";
@@ -8,7 +7,6 @@ import AddQualificationModal from "../../components/modal/AddQualificationModal"
 const ManageQualification = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { data } = useGetAllQualificationsQuery();
-  const { theme } = useTheme(); //* for using light and dark themes
   // console.log(data);
 
   const closeModal = () => {
@@ -37,15 +35,11 @@ const ManageQualification = () => {
       {data?.data?.length > 0 && (
         <div className="overflow-x-auto">
           <table
-            className={`table ${
-              theme.mode === "dark" ? "text-gray-100" : "text-gray-800"
-            }`}
+            className={`table text-base-content`}
           >
             {/* head */}
             <thead
-              className={`${
-                theme.mode === "dark" ? "text-gray-100" : "text-gray-800"
-              }`}
+              className={`text-base-content`}
             >
               <tr>
                 <th>SL</th>

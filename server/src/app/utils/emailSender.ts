@@ -1,33 +1,23 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import nodemailer from 'nodemailer'
+import nodemailer from 'nodemailer';
 import config from '../config';
 
-const emailSender = async (
-    email: string,
-    html: string
-) => {
-    const transporter = nodemailer.createTransport({
-        host: "smtp.gmail.com",
-        port: 587,
-        secure: false, // Use `true` for port 465, `false` for all other ports
-        auth: {
-            user: config.emailSender.email,
-            pass: config.emailSender.app_pass,
-        },
-        tls: {
-            rejectUnauthorized: false
-        }
-    });
+const emailSender = async (email: string, html: string, subject = 'Reset Password Link') => {
+  const transporter = nodemailer.createTransport({
+    host: 'smtp.gmail.com',
+    port: 587,
+    secure: false, // STARTTLS on 587; certificates are verified
+    auth: {
+      user: config.emailSender.email,
+      pass: config.emailSender.app_pass,
+    },
+  });
 
-    const info = await transporter.sendMail({
-        from: '"PH Health Care" <emonhasan7650@gmail.com>', // sender address
-        to: email, // list of receivers
-        subject: "Reset Password Link", // Subject line
-        //text: "Hello world?", // plain text body
-        html, // html body
-    });
-
-    //console.log("Message sent: %s", info.messageId);
-}
+  await transporter.sendMail({
+    from: `"Portfolio dashboard" <${config.emailSender.email}>`,
+    to: email,
+    subject,
+    html,
+  });
+};
 
 export default emailSender;

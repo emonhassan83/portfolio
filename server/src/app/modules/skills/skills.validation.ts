@@ -4,11 +4,11 @@ const createSkillValidationSchema = z.object({
   body: z.object({
     name: z
       .string({
-        required_error: 'Skill name is required!',
+        error: 'Skill name is required!',
       }),
     image: z
       .string({
-        required_error: 'Skill image is required!',
+        error: 'Skill image is required!',
       }),
   }),
 });
@@ -16,10 +16,10 @@ const createSkillValidationSchema = z.object({
 const updateSkillValidationSchema = z.object({
   body: z.object({
     name: z.string({
-      required_error: 'Skill name is required!',
+      error: 'Skill name is required!',
     }).optional(),
     image: z.string({
-      required_error: 'Skill image is required!',
+      error: 'Skill image is required!',
     }).optional(),
   }),
 });

@@ -1,11 +1,9 @@
 import Link from "next/link";
 import ManageProjectRow from "../../components/Dashboard/ManageProjectRow";
-import { useTheme } from "../../lib/ThemeProvider";
 import { useGetAllProjectsQuery } from "../../redux/features/projectApi";
 
 const ManageProject = () => {
   const { data } = useGetAllProjectsQuery();
-  const { theme } = useTheme(); //* for using light and dark themes
   // console.log(data);
 
   //* if there have no skill data
@@ -30,15 +28,11 @@ const ManageProject = () => {
       {data?.data?.length > 0 && (
         <div className="overflow-x-auto">
           <table
-            className={`table ${
-              theme.mode === "dark" ? "text-gray-100" : "text-gray-800"
-            }`}
+            className={`table text-base-content`}
           >
             {/* head */}
             <thead
-              className={`${
-                theme.mode === "dark" ? "text-gray-100" : "text-gray-800"
-              }`}
+              className={`text-base-content`}
             >
               <tr>
                 <th>SL</th>

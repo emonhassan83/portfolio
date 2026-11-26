@@ -124,7 +124,8 @@ font-size: var(--h1-font-size);
   margin-right: auto;
 }
 
-.grid {
+/* :where() keeps this default at zero specificity so Tailwind gap-* utilities can override it */
+:where(.grid) {
   display: grid;
   gap: 1.5rem;
 }

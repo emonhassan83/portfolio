@@ -7,9 +7,11 @@ import { USER_ROLE } from './user.constant';
 
 const router = express.Router();
 
+// Public sign-up is disabled: only an admin can create accounts.
 router.post(
   '/register',
-  zodValidationRequest(UserValidation.UserValidationSchema),
+  auth(USER_ROLE.admin),
+  zodValidationRequest(UserValidation.UserValidationSchema, { strip: true }),
   UserControllers.registerUser,
 );
 
@@ -30,7 +32,7 @@ router.patch(
 router.put(
   '/update-user/:id',
   auth(USER_ROLE.admin, USER_ROLE.user),
-  zodValidationRequest(UserValidation.UserUpdateValidationSchema),
+  zodValidationRequest(UserValidation.UserUpdateValidationSchema, { strip: true }),
   UserControllers.updateUserInfo,
 );
 
@@ -49,7 +51,7 @@ router.delete(
 
 router.get(
   '/users',
-  auth(USER_ROLE.admin, USER_ROLE.user),
+  auth(USER_ROLE.admin),
   UserControllers.getAllUsers,
 );
 

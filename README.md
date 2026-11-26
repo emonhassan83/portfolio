@@ -16,18 +16,23 @@ A fullstack personal developer portfolio and content management system (CMS) eng
 
 ## 🌟 Key Features
 
-### 🌐 Public Portfolio Experience
-- **Interactive Hero & About**: Developer biography, quick contact links, downloadable resume, and social integrations.
-- **Skills Matrix**: Categorized and visual display of programming languages, frameworks, libraries, and dev tools.
-- **Qualifications Timeline**: Chronological presentation of educational milestones and professional work experiences.
-- **Featured Projects Showcase**: Detailed portfolio project cards with live demo links, GitHub repositories (client/server), tech stack tags, and feature descriptions.
+### 🌐 Public Portfolio Experience (home page)
+- **Backend Engineer portfolio**: dark editorial design with a serif display hero, a 3D robot mascot that follows the pointer, bento grids, numbered sections and a day/night toggle.
+- **Sections**: Hero, About, Experience, Selected Work (case studies), System Architecture (interactive diagrams + request traces), Stack Index, Engineering Practices, Education & Certifications, live GitHub repos, Contact.
+- **Dashboard-managed**: every section (hero, about, experience, case studies with architecture diagrams, stack, practices, credentials, contact, SEO) is edited in the dashboard and stored in MongoDB. The page is server-rendered with ISR and refreshes immediately after a save. `client/src/data/portfolio.js` is the seed and the fallback when the API is unreachable.
+- **SEO & a11y**: server-rendered, Open Graph metadata, JSON-LD `Person`, `sitemap.xml`, `robots.txt`, skip link, keyboard-accessible tabs, reduced-motion support.
 - **Developer Blog & Articles**: Technical articles and developer tutorials with tag filtering and reading views.
 - **Client Testimonials**: Interactive Swiper carousel showcasing client recommendations and peer reviews.
 - **Direct Contact Form**: Seamless contact inquiry messaging integrated with EmailJS.
 - **Theme Switcher**: Smooth light and dark mode toggling with persisted user preference.
 
 ### 🛡️ Administrative Dashboard & CMS
-- **Authenticated Backoffice**: Role-based access control (Admin / User) protected by JWT and secure route guards.
+- **Authenticated Backoffice**: admin-only access.
+  - Sign in takes two steps: password, then a code from an authenticator app (TOTP) or a one-time backup code. An optional security question covers account recovery.
+  - The session lives in httpOnly SameSite=Strict cookies, which can be revoked.
+  - Accounts lock after 5 failed attempts.
+  - Requests are protected with a CSRF header, rate limits and helmet, and public sign-up is disabled. See `docs/AUTHENTICATION.md`.
+- **Home Page Content**: create, edit, publish/hide and reorder the portfolio sections, including architecture diagram columns and nodes.
 - **Project Governance**: Full CRUD interface for adding, editing, and archiving portfolio projects.
 - **Blog Management**: Draft, publish, update, and manage technical blog posts.
 - **Skill & Qualification Management**: Real-time management of displayed skills and career achievements.

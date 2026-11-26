@@ -1,20 +1,20 @@
-import { ZodError, ZodIssue } from "zod";
-import { TErrorSources, TGenericErrorResponse } from "../interface/error";
+import { ZodError } from 'zod';
+import { TErrorSources, TGenericErrorResponse } from '../interface/error';
 
 const handleZodError = (err: ZodError): TGenericErrorResponse => {
-    const errorSources: TErrorSources = err.issues.map((issue: ZodIssue) => {
-      return {
-        path: issue?.path[issue.path.length - 1],
-        message: issue.message,
-      };
-    });
-
-    const statusCode = 400;
+  const errorSources: TErrorSources = err.issues.map((issue) => {
+    const last = issue.path[issue.path.length - 1];
     return {
-      statusCode,
-      message: 'Validation error',
-      errorSources,
+      path: typeof last === 'number' ? last : String(last ?? ''),
+      message: issue.message,
     };
-  };
+  });
 
-  export default handleZodError;
+  return {
+    statusCode: 400,
+    message: 'Validation error',
+    errorSources,
+  };
+};
+
+export default handleZodError;

@@ -1,8 +1,6 @@
-"use client";
+import { redirect } from "next/navigation";
 
-import React from "react";
-import RegisterPage from "../../page/register/register";
-
+// Public sign-up is disabled; accounts are created by an admin.
 export default function Register() {
-  return <RegisterPage />;
+  redirect("/dashboard/login");
 }

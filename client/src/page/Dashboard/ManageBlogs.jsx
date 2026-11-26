@@ -1,10 +1,8 @@
 import ManageBlogRow from "../../components/Dashboard/ManageBlogRow";
-import { useTheme } from "../../lib/ThemeProvider";
 import { useGetAllBlogsQuery } from "../../redux/features/blogApi";
 
 const ManageBlogs = () => {
   const { data } = useGetAllBlogsQuery();
-  const { theme } = useTheme(); //* for using light and dark themes
   // console.log(data);
 
   //* if there have no skill data
@@ -23,15 +21,11 @@ const ManageBlogs = () => {
       {data?.data?.length > 0 && (
         <div className="overflow-x-auto">
           <table
-            className={`table ${
-              theme.mode === "dark" ? "text-gray-100" : "text-gray-800"
-            }`}
+            className={`table text-base-content`}
           >
             {/* head */}
             <thead
-              className={`${
-                theme.mode === "dark" ? "text-gray-100" : "text-gray-800"
-              }`}
+              className={`text-base-content`}
             >
               <tr>
                 <th>SL</th>

@@ -93,4 +93,4 @@ Deploy the Next.js 15 client to Vercel:
    - Projects and skills load dynamically from the backend.
    - Light/Dark theme switching toggles properly.
    - Contact form sends inquiry messages via EmailJS.
-   - Login to `/login` with Admin credentials and confirm dashboard access.
+   - Login to `/dashboard/login` with Admin credentials and confirm dashboard access.

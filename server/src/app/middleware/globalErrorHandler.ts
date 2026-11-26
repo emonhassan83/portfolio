@@ -56,7 +56,11 @@ const globalErrorHandler = (
         message: err?.message,
       },
     ];
-  } else if (err instanceof Error) {
+  } else if (err?.type === 'entity.too.large') {
+    statusCode = 413;
+    message = 'Request body is too large';
+    errorSources = [{ path: '', message }];
+  } else if (err instanceof Error && !config.is_production) {
     message = err.message;
     errorSources = [
       {
@@ -66,13 +70,14 @@ const globalErrorHandler = (
     ];
   }
 
-  // ultimate return
+  // Unknown errors keep a generic message in production; details stay in the server log.
+  if (statusCode >= 500) console.error(err);
+
   return res.status(statusCode).json({
     success: false,
     message,
     errorSources,
-    err,
-    stack: config.node_env === 'development' ? err?.stack : null,
+    ...(config.node_env === 'development' ? { err, stack: err?.stack } : {}),
   });
 };
 
