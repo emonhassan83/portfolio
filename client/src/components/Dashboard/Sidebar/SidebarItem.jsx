@@ -1,73 +1,96 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  MdOutlineManageSearch,
-  MdAddPhotoAlternate,
-  MdEqualizer,
-  MdManageHistory,
-  MdOutlineReviews,
-  MdPerson,
-  MdWorkHistory,
-  MdLayers,
-  MdRule,
-  MdSchool,
-  MdSecurity,
-} from "react-icons/md";
+import { MdPerson, MdWorkHistory, MdLayers, MdRule, MdSchool, MdSecurity, MdOutlineMail } from "react-icons/md";
 import { GrProjects } from "react-icons/gr";
-import { GiSkills } from "react-icons/gi";
-
-const linkCls = (active) =>
-  `mt-1 flex items-center rounded border-l-2 px-4 py-2.5 transition-colors duration-200 ${
-    active
-      ? "border-primary bg-primary/10 text-primary"
-      : "border-transparent text-base-content/75 hover:bg-base-300 hover:text-base-content"
-  }`;
+import { useGetMessagesQuery } from "../../../redux/features/messageApi";
 
 // GrProjects draws with a fixed stroke colour; this makes it follow the text colour.
-const grIcon = "h-5 w-5 [&_path]:stroke-current";
+const grIcon = "h-[18px] w-[18px] [&_path]:stroke-current";
+const icon = "h-[18px] w-[18px]";
 
-const portfolioLinks = [
-  { href: "/dashboard/portfolio", label: "Profile & Hero", icon: <MdPerson className="h-5 w-5" /> },
-  { href: "/dashboard/portfolio/experience", label: "Experience", icon: <MdWorkHistory className="h-5 w-5" /> },
-  { href: "/dashboard/portfolio/projects", label: "Case Studies", icon: <GrProjects className={grIcon} /> },
-  { href: "/dashboard/portfolio/stack", label: "Stack", icon: <MdLayers className="h-5 w-5" /> },
-  { href: "/dashboard/portfolio/practices", label: "Practices", icon: <MdRule className="h-5 w-5" /> },
-  { href: "/dashboard/portfolio/credentials", label: "Credentials", icon: <MdSchool className="h-5 w-5" /> },
-  { href: "/dashboard/security", label: "Security", icon: <MdSecurity className="h-5 w-5" /> },
+const groups = [
+  {
+    title: "Content",
+    links: [
+      { href: "/dashboard/portfolio", label: "Profile & Hero", icon: <MdPerson className={icon} /> },
+      { href: "/dashboard/portfolio/experience", label: "Experience", icon: <MdWorkHistory className={icon} /> },
+      { href: "/dashboard/portfolio/projects", label: "Case Studies", icon: <GrProjects className={grIcon} /> },
+      { href: "/dashboard/portfolio/stack", label: "Stack", icon: <MdLayers className={icon} /> },
+      { href: "/dashboard/portfolio/practices", label: "Practices", icon: <MdRule className={icon} /> },
+      { href: "/dashboard/portfolio/credentials", label: "Credentials", icon: <MdSchool className={icon} /> },
+    ],
+  },
+  {
+    title: "Inbox",
+    links: [{ href: "/dashboard/messages", label: "Messages", icon: <MdOutlineMail className={icon} />, key: "messages" }],
+  },
+  {
+    title: "Account",
+    links: [{ href: "/dashboard/security", label: "Security", icon: <MdSecurity className={icon} />, key: "security" }],
+  },
 ];
 
-const legacyLinks = [
-  { href: "/dashboard/add-project", label: "Add Project", icon: <MdOutlineManageSearch className="h-5 w-5" /> },
-  { href: "/dashboard/manage-projects", label: "Manage Project", icon: <GrProjects className={grIcon} /> },
-  { href: "/dashboard/manage-skills", label: "Manage Skills", icon: <GiSkills className="h-5 w-5" /> },
-  { href: "/dashboard/manage-qualifications", label: "Manage Qualifications", icon: <MdEqualizer className="h-5 w-5" /> },
-  { href: "/dashboard/add-blog", label: "Add Blog", icon: <MdAddPhotoAlternate className="h-5 w-5" /> },
-  { href: "/dashboard/manage-blogs", label: "Manage Blogs", icon: <MdManageHistory className="h-5 w-5" /> },
-  { href: "/dashboard/manage-reviews", label: "Manage Reviews", icon: <MdOutlineReviews className="h-5 w-5" /> },
-];
-
-const heading = "px-4 pb-1 font-mono text-[0.65rem] uppercase tracking-[0.2em] text-base-content/50";
-
-const SidebarItem = () => {
+/** Grouped dashboard navigation with an unread badge and a two-factor warning dot. */
+const SidebarItem = ({ twoFactorEnabled, onNavigate }) => {
   const pathname = usePathname();
+  // Unread count for the badge; refreshed every minute while the dashboard is open.
+  const { data } = useGetMessagesQuery({ limit: "1" }, { pollingInterval: 60_000 });
+  const unread = data?.meta?.counts?.new || 0;
 
-  const renderLinks = (links) =>
-    links.map((link) => {
-      const active = pathname === link.href;
+  const extra = (key) => {
+    if (key === "messages" && unread > 0) {
       return (
-        <Link key={link.href} href={link.href} aria-current={active ? "page" : undefined} className={linkCls(active)}>
-          {link.icon}
-          <span className="mx-4 font-medium">{link.label}</span>
-        </Link>
+        <span className="ml-auto rounded bg-primary px-1.5 py-0.5 font-mono text-[0.65rem] font-semibold leading-none text-primary-content">
+          {unread > 99 ? "99+" : unread}
+          <span className="sr-only"> unread</span>
+        </span>
       );
-    });
+    }
+    if (key === "security" && twoFactorEnabled === false) {
+      return (
+        <span className="ml-auto h-2 w-2 rounded-full bg-warning" title="Two-factor is off">
+          <span className="sr-only">Two-factor is off</span>
+        </span>
+      );
+    }
+    return null;
+  };
 
   return (
-    <nav aria-label="Dashboard">
-      <p className={`${heading} pt-2`}>Home page</p>
-      {renderLinks(portfolioLinks)}
-      <p className={`${heading} pt-6`}>Legacy pages</p>
-      {renderLinks(legacyLinks)}
+    <nav aria-label="Dashboard" className="space-y-6">
+      {groups.map((group) => (
+        <div key={group.title}>
+          <p className="mb-2 px-3 font-mono text-[0.62rem] uppercase tracking-[0.22em] text-base-content/40">
+            {group.title}
+          </p>
+          <ul className="space-y-0.5">
+            {group.links.map((link) => {
+              const active = pathname === link.href;
+              return (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    onClick={onNavigate}
+                    aria-current={active ? "page" : undefined}
+                    className={`group relative flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors duration-150 ${
+                      active
+                        ? "bg-primary/10 font-medium text-primary"
+                        : "text-base-content/70 hover:bg-base-300/70 hover:text-base-content"
+                    }`}
+                  >
+                    {active && <span className="absolute inset-y-1.5 left-0 w-0.5 rounded-full bg-primary" aria-hidden="true" />}
+                    <span className={active ? "" : "text-base-content/50 transition-colors group-hover:text-base-content/80"}>
+                      {link.icon}
+                    </span>
+                    <span className="truncate">{link.label}</span>
+                    {extra(link.key)}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      ))}
     </nav>
   );
 };

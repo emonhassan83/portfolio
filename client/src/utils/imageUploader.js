@@ -1,5 +1,5 @@
 const uploadImageToImgbb = async (file) => {
-    const url = `https://api.imgbb.com/1/upload?key=${process.env.VITE_IMGBB_KEY}`;
+    const url = `https://api.imgbb.com/1/upload?key=${process.env.NEXT_PUBLIC_IMGBB_KEY}`;
 
     const formData = new FormData();
     formData.append("image", file);

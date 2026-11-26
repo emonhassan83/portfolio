@@ -8,10 +8,7 @@ This document defines the RESTful conventions, query parameters, standardized re
 
 - **Base URL**: `/api` (e.g., `http://localhost:5000/api` or `https://<production-domain>/api`)
 - **Format**: JSON payloads for all incoming and outgoing data (`Content-Type: application/json`).
-- **Authentication**: Bearer token passed in the standard HTTP header:
-  ```http
-  Authorization: <jwt_token>
-  ```
+- **Authentication**: httpOnly session cookies set by `/api/auth/*` (no token in headers or browser storage). State-changing requests must also send the CSRF header `X-Requested-With: portfolio-dashboard`. See [AUTHENTICATION.md](AUTHENTICATION.md).
 
 ---
 
@@ -23,7 +20,7 @@ All successful HTTP responses conform to the following JSON structure:
 {
   "success": true,
   "statusCode": 200,
-  "message": "Projects retrieved successfully",
+  "message": "Messages retrieved successfully",
   "meta": {
     "page": 1,
     "limit": 10,
@@ -54,7 +51,7 @@ When an exception or validation failure occurs, the response matches:
 
 ## 3. QueryBuilder Parameters
 
-Endpoints supporting resource listings leverage the modular `QueryBuilder` supporting:
+Admin listing endpoints that use the modular `QueryBuilder` (for example the user list) support:
 
 | Parameter | Type | Example | Description |
 | :--- | :--- | :--- | :--- |
@@ -62,75 +59,73 @@ Endpoints supporting resource listings leverage the modular `QueryBuilder` suppo
 | `sort` | `string` | `?sort=-createdAt` | Sorts fields ascending (`name`) or descending (`-createdAt`) |
 | `page` | `number` | `?page=2` | Pagination page number (default: `1`) |
 | `limit` | `number` | `?limit=10` | Number of documents per page (default: `10`) |
-| `fields` | `string` | `?fields=name,technologies` | Field projection (comma-separated list of fields) |
-| `<filterField>` | `string` | `?isPublished=true` | Direct key-value exact matching for model fields |
+| `fields` | `string` | `?fields=name,email` | Field projection (comma-separated list of fields) |
+| `<filterField>` | `string` | `?status=new` | Direct key-value exact matching for model fields |
 
 ---
 
 ## 4. Complete Endpoint Catalog
 
 ### Authentication (`/api/auth`)
+Login is multi-step; see [AUTHENTICATION.md](AUTHENTICATION.md) for the flow.
+
 | Method | Endpoint | Access | Description |
 | :--- | :--- | :--- | :--- |
-| `POST` | `/api/auth/login` | Public | Login with email and password |
-| `POST` | `/api/auth/refresh-token` | Public | Issue new access token using refresh token |
-| `POST` | `/api/auth/change-password` | Authenticated | Change password for current logged-in user |
-| `POST` | `/api/auth/forgot-password` | Public | Send password reset link to registered email |
-| `POST` | `/api/auth/reset-password` | Public | Reset password using verified token |
+| `POST` | `/api/auth/login` | Public | Step 1: email and password |
+| `POST` | `/api/auth/login/verify` | Public | Step 2: security-question answer |
+| `POST` | `/api/auth/login/2fa` | Public | Complete login with a TOTP or backup code |
+| `POST` | `/api/auth/login/recover` | Public | Recover access with the security answer |
+| `POST` | `/api/auth/refresh-token` | Cookie | Issue a new access cookie from the refresh cookie |
+| `POST` | `/api/auth/logout` | Public | Clear the session cookies |
+| `GET` | `/api/auth/me` | Authenticated | Current session user |
+| `POST` | `/api/auth/change-password` | Authenticated | Change password |
+| `POST` | `/api/auth/forget-password` | Public | Send a password reset link |
+| `POST` | `/api/auth/reset-password` | Public | Reset password using the emailed token |
+| `POST` | `/api/auth/2fa/setup` | Authenticated | Begin TOTP setup |
+| `POST` | `/api/auth/2fa/enable` | Authenticated | Confirm and enable TOTP |
+| `POST` | `/api/auth/2fa/disable` | Authenticated | Disable TOTP (password and code) |
+| `POST` | `/api/auth/2fa/backup-codes` | Authenticated | Regenerate backup codes |
+| `PUT` | `/api/auth/security-question` | Authenticated | Set the optional security question |
+| `DELETE` | `/api/auth/security-question` | Authenticated | Remove the security question |
 
 ### Users (`/api/user`)
-| Method | Endpoint | Access | Description |
-| :--- | :--- | :--- | :--- |
-| `POST` | `/api/user/create-user` | Public | Register new user account |
-| `GET` | `/api/user/me` | Authenticated | Retrieve current user profile |
-| `GET` | `/api/user` | Admin | Retrieve all users |
-| `PATCH` | `/api/user/:id` | Authenticated | Update user profile |
-| `DELETE` | `/api/user/:id` | Admin | Soft-delete a user |
+Public sign-up is disabled; only an admin can create accounts.
 
-### Projects (`/api/project`)
 | Method | Endpoint | Access | Description |
 | :--- | :--- | :--- | :--- |
-| `POST` | `/api/project/create-project` | Admin | Create a new portfolio project |
-| `GET` | `/api/project` | Public | Get all projects (supports QueryBuilder) |
-| `GET` | `/api/project/:id` | Public | Get single project by ID |
-| `PATCH` | `/api/project/:id` | Admin | Update project details |
-| `DELETE` | `/api/project/:id` | Admin | Delete a project |
+| `POST` | `/api/user/register` | Admin | Create a user account |
+| `GET` | `/api/user/users` | Admin | List all users |
+| `GET` | `/api/user/my-profile` | Authenticated | Current user profile |
+| `PUT` | `/api/user/update-user/:id` | Authenticated | Update profile (non-admins only their own) |
+| `PATCH` | `/api/user/change-role` | Admin | Change a user's role |
+| `PATCH` | `/api/user/change-status` | Admin | Change a user's status |
+| `PATCH` | `/api/user/soft-delete` | Admin | Soft-delete a user |
+| `DELETE` | `/api/user/delete-user/:id` | Admin | Permanently delete a user |
 
-### Skills (`/api/skills`)
-| Method | Endpoint | Access | Description |
-| :--- | :--- | :--- | :--- |
-| `POST` | `/api/skills/create-skill` | Admin | Create new skill entry |
-| `GET` | `/api/skills` | Public | Get all skills |
-| `GET` | `/api/skills/:id` | Public | Get single skill |
-| `PATCH` | `/api/skills/:id` | Admin | Update skill entry |
-| `DELETE` | `/api/skills/:id` | Admin | Delete a skill |
+### Portfolio content (`/api/portfolio`)
+Content for the home page. `:resource` is one of `experience`, `projects` (case studies), `stack`, `practices`, `credentials`.
 
-### Qualifications (`/api/qualifications`)
 | Method | Endpoint | Access | Description |
 | :--- | :--- | :--- | :--- |
-| `POST` | `/api/qualifications/create-qualification` | Admin | Create qualification record |
-| `GET` | `/api/qualifications` | Public | Get all qualifications |
-| `GET` | `/api/qualifications/:id` | Public | Get single qualification |
-| `PATCH` | `/api/qualifications/:id` | Admin | Update qualification |
-| `DELETE` | `/api/qualifications/:id` | Admin | Delete qualification |
+| `GET` | `/api/portfolio` | Public | Everything the home page renders |
+| `GET` | `/api/portfolio/profile` | Admin | Profile and hero singleton |
+| `PUT` | `/api/portfolio/profile` | Admin | Update the profile singleton |
+| `POST` | `/api/portfolio/import` | Admin | One-time import of the default content |
+| `GET` | `/api/portfolio/:resource` | Admin | List a collection |
+| `POST` | `/api/portfolio/:resource` | Admin | Create an item |
+| `PATCH` | `/api/portfolio/:resource/reorder` | Admin | Reorder items |
+| `PUT` | `/api/portfolio/:resource/:id` | Admin | Update an item |
+| `DELETE` | `/api/portfolio/:resource/:id` | Admin | Delete an item |
 
-### Blogs (`/api/blogs`)
-| Method | Endpoint | Access | Description |
-| :--- | :--- | :--- | :--- |
-| `POST` | `/api/blogs/create-blog` | Admin | Create new blog post |
-| `GET` | `/api/blogs` | Public | Get all published blogs (supports QueryBuilder) |
-| `GET` | `/api/blogs/:id` | Public | Get single blog post |
-| `PATCH` | `/api/blogs/:id` | Admin | Update blog post |
-| `DELETE` | `/api/blogs/:id` | Admin | Delete blog post |
+### Contact messages (`/api/messages`)
+Inbox for the home page contact form. Statuses: `new` → `read` → `replied` → `archived`.
 
-### Reviews (`/api/reviews`)
 | Method | Endpoint | Access | Description |
 | :--- | :--- | :--- | :--- |
-| `POST` | `/api/reviews/create-review` | Authenticated | Submit a review/testimonial |
-| `GET` | `/api/reviews` | Public | Get all reviews |
-| `GET` | `/api/reviews/:id` | Public | Get single review |
-| `PATCH` | `/api/reviews/:id` | Authenticated | Update review |
-| `DELETE` | `/api/reviews/:id` | Admin | Delete review |
+| `POST` | `/api/messages` | Public (5 per hour per IP) | `{ name, email, message }`. A filled `website` honeypot field gets the same 201 but is not stored |
+| `GET` | `/api/messages` | Admin | `?status=&searchTerm=&page=&limit=` (limit max 100). `meta.counts` has the total per status |
+| `PATCH` | `/api/messages/:id` | Admin | `{ status?, note? }`. Stamps `readAt` the first time it leaves `new`, `repliedAt` on `replied` |
+| `DELETE` | `/api/messages/:id` | Admin | Delete a message |
 
 ---
 
@@ -139,7 +134,7 @@ Endpoints supporting resource listings leverage the modular `QueryBuilder` suppo
 | Status Code | Usage Scenario |
 | :--- | :--- |
 | `200 OK` | Successful retrieval, modification, or standard operation |
-| `201 Created` | Successful creation of a new resource (`Project`, `Blog`, `User`, etc.) |
+| `201 Created` | Successful creation of a new resource (user, portfolio item, message) |
 | `400 Bad Request` | Zod validation failure or malformed payload |
 | `401 Unauthorized` | Missing, expired, or invalid JWT token |
 | `403 Forbidden` | Valid token but insufficient permissions (e.g., non-admin accessing admin route) |

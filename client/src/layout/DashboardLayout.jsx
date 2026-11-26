@@ -7,10 +7,10 @@ const DashboardLayout = ({ children }) => {
   const needsTwoFactor = data?.data && !data.data.twoFactorEnabled;
 
   return (
-    <div className='relative min-h-screen md:flex'>
+    <div className='relative min-h-screen'>
       <Sidebar/>
-      <div className='flex-1  md:ml-64'>
-        <div className='p-5'>
+      <div className='md:ml-64'>
+        <div className='p-5 lg:p-8'>
           {needsTwoFactor && (
             <div role='status' className='alert mb-5 border border-warning/40 bg-warning/10 text-sm text-base-content'>
               <span>

@@ -59,7 +59,7 @@ What the password step returns depends on the account:
 
 ## 3. Roles (RBAC)
 
-- **`admin`**: dashboard access; CRUD on portfolio content, projects, blogs, skills, qualifications and reviews; user management.
+- **`admin`**: dashboard access; management of portfolio content and contact messages; user management.
 - **`user`**: can edit only their own profile.
 
 Public sign-up is disabled. `POST /api/user/register` is admin-only and always creates role `user`. The sign-in page is `/dashboard/login`; `/login` and `/register` redirect there.
@@ -95,6 +95,7 @@ Public sign-up is disabled. `POST /api/user/register` is admin-only and always c
   - 600 requests per 15 min per IP on `/api`
   - 20 per 15 min on credential endpoints
   - 200 per 15 min on content writes
+  - 5 per hour on the public contact form (`POST /api/messages`)
 - **Body handling:**
   - JSON bodies are capped at 100kb.
   - Keys starting with `$` or containing `.` are stripped (NoSQL operator injection).
@@ -114,4 +115,6 @@ Public sign-up is disabled. `POST /api/user/register` is admin-only and always c
 
 `cd server && npm test` runs the auth security suite in `server/tests/` (Node's test runner, an in-memory MongoDB from `mongodb-memory-server`, real HTTP requests against the app). The first run downloads a MongoDB binary. The tests never read the real `.env` database or mailbox: `tests/helpers.ts` sets its own values before the app loads.
 
-Covered: RFC 6238 vectors, secret encryption, code replay, one-time backup codes, lockout, token-type confusion, the legacy endpoint not bypassing two-factor, session revocation, recovery, CSRF header, rate limiting, role checks and secret leakage in responses.
+`tests/messages.test.ts` covers the contact inbox: public create, honeypot, validation, rate limit, CSRF, admin-only access and literal search.
+
+Covered by the auth suite: RFC 6238 vectors, secret encryption, code replay, one-time backup codes, lockout, token-type confusion, the legacy endpoint not bypassing two-factor, session revocation, recovery, CSRF header, rate limiting, role checks and secret leakage in responses.

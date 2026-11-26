@@ -32,7 +32,7 @@ npm install
 ```
 
 ### Step 2: Configure Environment Variables
-Create a file named `.env` in the `server/` folder:
+Copy `server/.env.example` to `server/.env` and fill in the values:
 ```env
 NODE_ENV=development
 PORT=5000
@@ -84,7 +84,7 @@ npm install
 ```
 
 ### Step 2: Configure Environment Variables
-Create a file named `.env.local` in the `client/` folder:
+Copy `client/.env.example` to `client/.env` (or `.env.local`) and fill in the values:
 ```env
 # Backend origin (no /api). Browser calls to /api/* are proxied here (next.config.mjs),
 # and the home page fetches content from it on the server.
@@ -106,6 +106,7 @@ All home page sections are managed in **Dashboard → Home page**:
 | Experience | Roles |
 | Case Studies | Projects, including the architecture diagram columns/nodes and request trace |
 | Stack / Practices / Credentials | Their sections |
+| Messages | Contact form inbox: table, search, status tracking (new / read / replied / archived), private notes, reply by email |
 | Security | Two-factor (authenticator app, backup codes), optional security question, password change |
 
 - **First run:** open Profile & Hero and click **Import current content**. This copies `client/src/data/portfolio.js` into MongoDB and only works while the content collections are empty.

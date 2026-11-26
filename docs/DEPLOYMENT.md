@@ -84,13 +84,13 @@ Deploy the Next.js 15 client to Vercel:
 
 ## 5. Post-Deployment Verification
 
-1. **API Health**: Send a GET request to the projects endpoint:
+1. **API Health**: Send a GET request to the public portfolio endpoint:
    ```bash
-   curl https://<backend-domain>/api/project
+   curl https://<backend-domain>/api/portfolio
    ```
    Ensure it returns `{ success: true, statusCode: 200, ... }`.
 2. **Frontend Connectivity**: Open the deployed frontend URL in the browser and verify:
-   - Projects and skills load dynamically from the backend.
+   - The home page content loads from the backend (`/api/portfolio`).
    - Light/Dark theme switching toggles properly.
-   - Contact form sends inquiry messages via EmailJS.
+   - Contact form sends inquiry messages via EmailJS and they appear in the dashboard Messages inbox.
    - Login to `/dashboard/login` with Admin credentials and confirm dashboard access.

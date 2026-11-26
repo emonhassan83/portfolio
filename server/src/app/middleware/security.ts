@@ -51,4 +51,6 @@ const limiter = (windowMinutes: number, limit: number, message: string) =>
 export const apiLimiter = limiter(15, 600, 'Too many requests, try again later.');
 // Per-IP ceiling for all credential endpoints; per-account lockout (5 failures) is the main brute-force guard.
 export const loginLimiter = limiter(15, 20, 'Too many login attempts, try again in 15 minutes.');
+// Public contact form: a person rarely sends more than a few messages.
+export const contactLimiter = limiter(60, 5, 'Too many messages, try again later.');
 export const writeLimiter = limiter(15, 200, 'Too many changes, slow down.');

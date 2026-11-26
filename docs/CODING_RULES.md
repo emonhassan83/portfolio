@@ -10,14 +10,14 @@ This document specifies the software engineering conventions, directory standard
 Each domain module must strictly encapsulate its concerns in separate files:
 
 ```
-modules/project/
-├── project.interface.ts   # TypeScript interfaces and custom types
-├── project.model.ts       # Mongoose Schema & Model definition
-├── project.validation.ts  # Zod validation schemas
-├── project.constant.ts    # Searchable fields, filterable fields, enums
-├── project.service.ts     # Business logic & QueryBuilder interaction
-├── project.controller.ts  # Request handling & sendResponse
-└── project.routes.ts      # Express Router mapping
+modules/message/
+├── message.interface.ts   # TypeScript interfaces and custom types
+├── message.model.ts       # Mongoose Schema & Model definition
+├── message.validation.ts  # Zod validation schemas
+├── message.constant.ts    # Searchable fields, filterable fields, enums
+├── message.service.ts     # Business logic & QueryBuilder interaction
+├── message.controller.ts  # Request handling & sendResponse
+└── message.route.ts       # Express Router mapping
 ```
 
 ### Frontend (`client/src/`)
@@ -41,13 +41,13 @@ modules/project/
 
 ```typescript
 // Example: Standard Controller Pattern
-export const getProjects = catchAsync(async (req, res) => {
-  const result = await ProjectServices.getAllProjectsFromDB(req.query);
+export const listMessages = catchAsync(async (req, res) => {
+  const result = await MessageServices.listMessagesFromDB(req.query);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Projects retrieved successfully',
+    message: 'Messages retrieved successfully',
     meta: result.meta,
     data: result.result,
   });
@@ -58,21 +58,21 @@ export const getProjects = catchAsync(async (req, res) => {
 - Implement all data access, model queries, transactions, and transformations here.
 - For listing endpoints, instantiate `QueryBuilder` with the model query and `query` parameters:
 ```typescript
-const projectQuery = new QueryBuilder(Project.find(), query)
-  .search(projectSearchableFields)
+const messageQuery = new QueryBuilder(Message.find(), query)
+  .search(messageSearchableFields)
   .filter()
   .sort()
   .paginate()
   .fields();
 
-const result = await projectQuery.modelQuery;
-const meta = await projectQuery.countTotal();
+const result = await messageQuery.modelQuery;
+const meta = await messageQuery.countTotal();
 return { meta, result };
 ```
 - Throw `AppError(statusCode, message)` on validation or business rule failures.
 
 ### 4. Models & Schemas (`*.model.ts`)
-- Enforce strict typing via generics: `Schema<TProject>(...)`.
+- Enforce strict typing via generics: `Schema<TMessage>(...)`.
 - Enable `{ timestamps: true }` on all Mongoose schemas.
 - Use pre-save hooks for side-effects (e.g., password hashing with bcrypt).
 
@@ -81,7 +81,7 @@ return { meta, result };
 ## 3. Type Safety Standards
 
 - **No `any`**: Explicitly type request parameters, payloads, and function returns.
-- **Strict Interfaces**: Match Mongoose models with corresponding TypeScript interfaces (`TUser`, `TProject`, `TBlog`, `TSkill`, `TQualification`, `TReview`).
+- **Strict Interfaces**: Match Mongoose models with corresponding TypeScript interfaces (`TUser`, `TMessage`).
 
 ---
 
@@ -89,7 +89,7 @@ return { meta, result };
 
 - Custom errors must inherit from `AppError`:
 ```typescript
-throw new AppError(httpStatus.NOT_FOUND, 'Project not found with the requested ID');
+throw new AppError(httpStatus.NOT_FOUND, 'Message not found with the requested ID');
 ```
 - The `globalErrorHandler` centrally maps and formats:
   - Zod Validation Errors (`handleZodError`)
@@ -104,5 +104,5 @@ throw new AppError(httpStatus.NOT_FOUND, 'Project not found with the requested I
 1. **Tailwind & DaisyUI**: Prioritize utility classes and theme variables (`bg-base-100`, `text-base-content`). Avoid hardcoded absolute pixel styles where responsive utility classes apply.
 2. **RTK Query Caching**:
    - Define query and mutation tags accurately.
-   - Provide tags on queries (`providesTags: ['Project']`) and invalidate tags on mutations (`invalidatesTags: ['Project']`).
+   - Provide tags on queries (`providesTags: ['Messages']`) and invalidate tags on mutations (`invalidatesTags: ['Messages']`).
 3. **Form Handling**: Utilize `react-hook-form` for form validation and input state management.

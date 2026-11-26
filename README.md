@@ -21,9 +21,7 @@ A fullstack personal developer portfolio and content management system (CMS) eng
 - **Sections**: Hero, About, Experience, Selected Work (case studies), System Architecture (interactive diagrams + request traces), Stack Index, Engineering Practices, Education & Certifications, live GitHub repos, Contact.
 - **Dashboard-managed**: every section (hero, about, experience, case studies with architecture diagrams, stack, practices, credentials, contact, SEO) is edited in the dashboard and stored in MongoDB. The page is server-rendered with ISR and refreshes immediately after a save. `client/src/data/portfolio.js` is the seed and the fallback when the API is unreachable.
 - **SEO & a11y**: server-rendered, Open Graph metadata, JSON-LD `Person`, `sitemap.xml`, `robots.txt`, skip link, keyboard-accessible tabs, reduced-motion support.
-- **Developer Blog & Articles**: Technical articles and developer tutorials with tag filtering and reading views.
-- **Client Testimonials**: Interactive Swiper carousel showcasing client recommendations and peer reviews.
-- **Direct Contact Form**: Seamless contact inquiry messaging integrated with EmailJS.
+- **Direct Contact Form**: Contact inquiries are emailed through EmailJS and stored in the dashboard inbox.
 - **Theme Switcher**: Smooth light and dark mode toggling with persisted user preference.
 
 ### 🛡️ Administrative Dashboard & CMS
@@ -33,10 +31,8 @@ A fullstack personal developer portfolio and content management system (CMS) eng
   - Accounts lock after 5 failed attempts.
   - Requests are protected with a CSRF header, rate limits and helmet, and public sign-up is disabled. See `docs/AUTHENTICATION.md`.
 - **Home Page Content**: create, edit, publish/hide and reorder the portfolio sections, including architecture diagram columns and nodes.
-- **Project Governance**: Full CRUD interface for adding, editing, and archiving portfolio projects.
-- **Blog Management**: Draft, publish, update, and manage technical blog posts.
-- **Skill & Qualification Management**: Real-time management of displayed skills and career achievements.
-- **Review Moderation**: Admin review management and approval workflow.
+- **Messages Inbox**: review contact-form submissions, track status (new, read, replied, archived) and keep private notes.
+- **Security Settings**: authenticator-app two-factor, backup codes, optional security question and password change.
 
 ---
 
@@ -86,7 +82,7 @@ cd server
 npm install
 
 # Configure environment variables
-cp .env.example .env   # Or create .env with required keys (see docs/development.md)
+cp .env.example .env   # then fill in the values (see docs/development.md)
 
 # Start development server
 npm run dev
@@ -99,8 +95,7 @@ cd ../client
 npm install
 
 # Configure environment variables
-# Create .env.local with:
-# NEXT_PUBLIC_BASE_URL=http://localhost:5000/api
+cp .env.example .env   # then fill in the values
 
 # Start Next.js development server
 npm run dev
@@ -109,37 +104,12 @@ The client application will run on `http://localhost:3000`.
 
 ---
 
-## ⚙️ Environment Variables Overview
-
-### Backend (`server/.env`)
-```env
-NODE_ENV=development
-PORT=5000
-DATABASE_URL=mongodb+srv://<username>:<password>@cluster0.mongodb.net/portfolio?retryWrites=true&w=majority
-CLIENT_URL=http://localhost:3000
-BCRYPT_SALT_ROUNDS=12
-JWT_ACCESS_SECRET=your_jwt_access_secret_key
-JWT_REFRESH_SECRET=your_jwt_refresh_secret_key
-JWT_ACCESS_EXPIRE_IN=1d
-JWT_REFRESH_EXPIRE_IN=30d
-RESET_PASS_LINK=http://localhost:3000/reset-password
-EMAIL=your-email@gmail.com
-APP_PASS=your-google-app-password
-```
-
-### Frontend (`client/.env.local`)
-```env
-NEXT_PUBLIC_BASE_URL=http://localhost:5000/api
-```
-
----
-
 ## 📜 Monorepo Layout
 ```
 portfolio/
 ├── client/          # Next.js 15 App Router Frontend
 │   ├── src/
-│   │   ├── app/     # Pages and layouts ((main), dashboard, login, register)
+│   │   ├── app/     # Pages and layouts ((portfolio), dashboard, login, register)
 │   │   ├── redux/   # RTK Query baseApi and feature slices
 │   │   └── ...
 │   └── package.json
@@ -147,7 +117,7 @@ portfolio/
 │   ├── src/
 │   │   ├── app/
 │   │   │   ├── builder/   # QueryBuilder (search, filter, sort, paginate)
-│   │   │   ├── modules/   # Feature modules (project, blogs, skills, user, etc.)
+│   │   │   ├── modules/   # Feature modules (Auth, user, portfolio, message)
 │   │   │   └── routes/    # Application router aggregator
 │   └── package.json
 ├── docs/            # Engineering specifications and architecture documentation

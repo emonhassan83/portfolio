@@ -101,6 +101,12 @@ Status: implemented (2026-11-25).
   - Env (optional): `TOTP_ENCRYPTION_KEY`, `TOTP_ISSUER`. Without the first, secrets are encrypted with a key derived from `JWT_ACCESS_SECRET`, so rotating that secret would invalidate enrolled authenticators.
   - Verified: server `tsc` clean, ESLint clean on touched client files, 50/50 tests. The new login and Security screens were not clicked through in a browser.
 
+- [x] 29. Dashboard dark theme (2026-11-26): DaisyUI `portfolio` theme in `tailwind.config.cjs`, applied in `app/dashboard/layout.jsx`; sidebar and legacy pages moved off fixed grays.
+- [x] 30. Contact inbox (2026-11-26): server `message` module (`/api/messages`), contact form saves every submission (EmailJS kept as notification), **Dashboard → Messages** with table, status tabs and counts, search, detail panel, private note, reply by email (marks replied), delete, unread badge in the sidebar. Legacy menu removed from the sidebar (routes and modules kept). 7 tests in `server/tests/messages.test.ts`; 57/57 pass. Not clicked through in a browser.
+- [x] 31. Legacy removal + sidebar (2026-11-26): deleted server modules project/skills/qualification/blogs/review and their routes; deleted the client legacy dashboard pages, modals, forms, row components, API slices (incl. unused `userApi`), the `(main)` group (`/projects`, `/blogs`), the old `components/Home` and `components/Shared`, and the broken Vite leftovers (`main.jsx`, `App.jsx`, `routes/routes.jsx`, `layout/MainLayout.jsx`). Sitemap lists only `/`. MongoDB collections for those modules were not dropped. Sidebar rebuilt: brand, profile card with role and 2FA status (initials fallback, uses `/auth/me`), groups Content / Inbox / Account, unread badge, 2FA warning dot, View site, mobile drawer with backdrop and Escape. Server `tsc` clean, 57/57 tests, removed routes return 404, dashboard pages compile; not clicked through in a browser.
+  - Known: `npm run lint` in client reports 2 pre-existing issues (`app/Providers.jsx` unused `React`, `app/layout.jsx` fast-refresh warning).
+  - Optional: drop the old `projects`, `skills`, `qualifications`, `blogs`, `reviews` collections in Atlas once nothing is needed from them.
+
 ### To do on the owner's side
 - `server/.env`:
   - add `REVALIDATE_SECRET` and `JWT_CHALLENGE_SECRET`

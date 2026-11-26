@@ -49,7 +49,7 @@ const baseQueryWithRefresh = async (args, api, extraOptions) => {
 const baseApi = createApi({
   reducerPath: "api",
   baseQuery: baseQueryWithRefresh,
-  tagTypes: ["Auth", "Users", "Project", "Portfolio"],
+  tagTypes: ["Auth", "Portfolio", "Messages"],
   endpoints: () => ({}),
 });
 

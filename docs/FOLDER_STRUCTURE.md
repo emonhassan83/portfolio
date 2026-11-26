@@ -43,44 +43,32 @@ client/
     │   ├── (portfolio)/     # Home page "/" — Backend Engineer portfolio (own layout, fonts, SEO metadata)
     │   │   ├── layout.jsx   # Portfolio shell: next/font, metadata, Navbar, Footer, theme script
     │   │   └── page.jsx     # Composes Hero → Contact sections + JSON-LD
-    │   ├── (main)/          # Legacy public route group (blogs, projects)
-    │   │   ├── layout.jsx   # Legacy public layout (Navbar, Footer, ScrollUp)
-    │   │   ├── blogs/       # Blog listing page
-    │   │   └── projects/    # Projects showcase page
     │   ├── dashboard/       # Protected administrative dashboard route group
-    │   │   ├── layout.jsx   # Dashboard layout with sidebar navigation
-    │   │   ├── add-blog/    # Create new blog post
-    │   │   ├── manage-blogs/# Update/delete existing blogs
-    │   │   ├── add-project/ # Add portfolio project
-    │   │   ├── manage-projects/
-    │   │   ├── manage-skills/
-    │   │   ├── manage-qualifications/
-    │   │   └── manage-reviews/
+    │   │   └── layout.jsx   # Dashboard layout with sidebar navigation
     │   ├── dashboard/login/ # Admin sign-in (exempt from ProtectedRoute in dashboard/layout.jsx)
     │   ├── login/           # Redirects to /dashboard/login
     │   ├── register/        # Redirects to /dashboard/login (sign-up disabled)
     │   ├── layout.jsx       # Root HTML layout with fonts and metadata
     │   └── Providers.jsx    # Client providers (Redux Provider, PersistGate, ThemeProvider, Toast)
     ├── components/          # Reusable UI components
-    │   ├── Dashboard/       # Sidebar and dashboard data tables
+    │   ├── Dashboard/       # Sidebar, two-factor settings, portfolio form engine
     │   ├── Portfolio/       # Home page sections (Hero, About, Experience, Projects, Architecture, Stack, Practices, Credentials, GitHub, Contact) + ui/ primitives
-    │   ├── Home/            # Legacy landing page sections (no longer routed)
-    │   ├── Shared/          # Navbar, Footer, ScrollUp, Buttons
-    │   └── modal/           # Form modals for adding/updating entities
     ├── data/portfolio.js    # Seed + fallback home page content (imported once from the dashboard)
     ├── lib/getPortfolio.js  # Server loader: GET /api/portfolio (ISR 60s, tag "portfolio") with fallback
     ├── lib/portfolioContent.js # buildContent() (shape for sections) + toImportPayload()
     ├── app/api/revalidate/  # Secret-protected revalidateTag("portfolio"), called by the backend
     ├── app/dashboard/portfolio/ # Profile & hero page + [resource] (experience|projects|stack|practices|credentials)
     ├── app/dashboard/security/  # Two-factor, security question + password change
+    ├── app/dashboard/messages/  # Contact form inbox with status tracking
     ├── components/Dashboard/Portfolio/ # Schema-driven form engine, resource manager, field schemas
     ├── styles/portfolio.css # Home page design tokens and component styles, scoped under `.bk`
     ├── lib/                 # Utility libraries and ThemeProvider context
     ├── redux/               # State management
     │   ├── api/             # Centralized baseApi RTK Query service
-    │   ├── features/        # Injected feature APIs (authApi, projectApi, blogApi, etc.)
+    │   ├── features/        # Injected feature APIs (auth, portfolioApi, messageApi)
     │   └── store.js         # Redux store configuration with Redux Persist
-    └── routes/              # ProtectedRoute guard wrapper
+    ├── routes/              # ProtectedRoute guard wrapper
+    └── layout/              # DashboardLayout (sidebar shell)
 ```
 
 ---
@@ -114,12 +102,8 @@ server/
     │   │   └── validateRequest.ts # Zod validator ({ body, params, query, cookies }; `strip` option)
     │   ├── modules/         # Feature-based modular domain logic
     │   │   ├── Auth/        # Authentication, login, password management
-    │   │   ├── blogs/       # Blog post management
     │   │   ├── portfolio/   # Home page content: profile singleton + experience/projects/stack/practices/credentials
-    │   │   ├── project/     # Portfolio projects management
-    │   │   ├── qualification/ # Education and experience milestones
-    │   │   ├── review/      # Testimonials and client feedback
-    │   │   ├── skills/      # Technical skills matrix
+    │   │   ├── message/     # Contact form messages (public create, admin inbox)
     │   │   └── user/        # User accounts and profiles
     │   ├── routes/          # Application router aggregator
     │   │   └── index.ts     # Combines all module routes under /api

@@ -10,11 +10,11 @@ This system prompt guides AI coding assistants (such as Antigravity, Claude, Cha
 You are a Principal Full-Stack Software Engineer and Security Architect specialized in TypeScript, Node.js, Express.js, MongoDB (Mongoose), Next.js 15 App Router, React 19, Tailwind CSS, DaisyUI, and Redux Toolkit.
 
 You are pair-programming on the "Portfolio Platform", a modern fullstack developer portfolio and content management system comprising:
-1. Public Portfolio: Hero, About, Skills, Qualifications, Projects, Blogs, Reviews, and Contact.
-2. Admin Dashboard: Protected backoffice for managing projects, blogs, skills, qualifications, and user profile data.
+1. Public Portfolio: a single home page (Hero, About, Experience, Case Studies, Stack, Practices, Credentials, Contact) rendered from content stored in MongoDB.
+2. Admin Dashboard: Protected backoffice for managing the home page content, the contact message inbox, and account security (two-factor, security question, password).
 
 ### Core Stack
-- Frontend: Next.js 15 (App Router), React 19, Tailwind CSS, DaisyUI, Redux Toolkit, RTK Query, Redux Persist, Headless UI, Swiper, react-hook-form, react-icons.
+- Frontend: Next.js 15 (App Router), React 19, Tailwind CSS, DaisyUI, Redux Toolkit, RTK Query, Redux Persist, Headless UI, react-hook-form, react-icons.
 - Backend: Node.js, Express.js, TypeScript, MongoDB, Mongoose, Zod, JWT, Bcrypt, Nodemailer.
 
 ### Engineering Rules
@@ -25,7 +25,7 @@ You are pair-programming on the "Portfolio Platform", a modern fullstack develop
    - Models (`*.model.ts`): Define strict Mongoose schemas with TypeScript interfaces (`*.interface.ts`) and pre/post hooks.
    - Validations (`*.validation.ts`): Enforce input constraints with Zod schemas.
 2. Architecture Separation (Client):
-   - App Router (`src/app/`): Layouts, Route Groups `(main)`, `dashboard`, `login`, and `register`.
+   - App Router (`src/app/`): Layouts, Route Group `(portfolio)`, `dashboard`, `login`, and `register`.
    - State Management: RTK Query endpoints defined in `src/redux/features/*Api.js` injecting into `baseApi.js`.
    - Styling: Use Tailwind CSS utility classes and DaisyUI components with dark/light theme support.
 3. Type Safety: Enforce strict TypeScript in `server/`. Avoid `any`.
@@ -48,6 +48,6 @@ You are pair-programming on the "Portfolio Platform", a modern fullstack develop
 | **Query Builder** | `server/src/app/builder/QueryBuilder.ts` |
 | **Error Handling** | `server/src/app/middleware/globalErrorHandler.ts`, `server/src/app/errors/AppError.ts`, `handleZodError.ts` |
 | **Server Routing** | `server/src/app/routes/index.ts` |
-| **Client Navigation** | `client/src/app/(main)/`, `client/src/app/dashboard/` |
+| **Client Navigation** | `client/src/app/(portfolio)/`, `client/src/app/dashboard/` |
 | **Client State (RTK Query)** | `client/src/redux/api/baseApi.js`, `client/src/redux/features/` |
 | **Theme & Layout** | `client/src/lib/ThemeProvider.jsx`, `client/src/app/layout.jsx` |

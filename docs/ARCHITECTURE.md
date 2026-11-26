@@ -56,7 +56,7 @@ sequenceDiagram
 ### Layer Responsibilities:
 1. **Router (`*.route.ts`)**: Defines endpoint paths and HTTP verbs (`GET`, `POST`, `PUT`, `PATCH`, `DELETE`). Injects middleware (`auth`, `validateRequest`).
 2. **Middleware (`middleware/`)**:
-   - `auth.ts`: Verifies incoming JWT Bearer tokens and checks role permissions (`admin`, `user`).
+   - `auth.ts`: Verifies the JWT session cookie, reads role and tokenVersion from the database and checks role permissions (`admin`, `user`).
    - `validateRequest.ts`: Executes Zod schemas on `req.body`, `req.cookies`, or `req.params`.
    - `globalErrorHandler.ts`: Central error translation formatting all exceptions into a consistent schema.
 3. **Controller (`*.controller.ts`)**: Extracts input arguments, calls corresponding service methods wrapped in `catchAsync`, and invokes `sendResponse()`.
@@ -69,9 +69,6 @@ sequenceDiagram
 
 ```mermaid
 erDiagram
-    USER ||--o{ BLOG : "authors"
-    USER ||--o{ REVIEW : "submits"
-
     USER {
         ObjectId _id PK
         string name
@@ -88,59 +85,29 @@ erDiagram
         date updatedAt
     }
 
-    PROJECT {
+    MESSAGE {
         ObjectId _id PK
         string name
-        string image
-        string description
-        string features
-        string technologies
-        string duration
-        string live_site_url
-        string client_site_url
-        string server_site_url
+        string email
+        string message
+        string status "new | read | replied | archived"
+        string note
+        date readAt
+        date repliedAt
         date createdAt
         date updatedAt
     }
 
-    BLOG {
+    PORTFOLIO_PROFILE {
         ObjectId _id PK
-        string name
-        string banner
-        string description
-        string images
-        string tags
-        ObjectId author FK
-        boolean isPublished
-        date createdAt
-        date updatedAt
+        object hero_about_contact_seo "singleton"
     }
 
-    SKILL {
+    PORTFOLIO_ITEM {
         ObjectId _id PK
-        string name
-        string image
-        date createdAt
-        date updatedAt
-    }
-
-    QUALIFICATION {
-        ObjectId _id PK
-        string name
-        string designation
-        string description
-        string duration
-        date createdAt
-        date updatedAt
-    }
-
-    REVIEW {
-        ObjectId _id PK
-        ObjectId user FK
-        number rating
-        string content
-        date createdAt
-        date updatedAt
+        string resource "experience | projects | stack | practices | credentials"
+        number order
+        boolean hidden
     }
 ```
 
@@ -150,10 +117,10 @@ erDiagram
 
 The Next.js 15 frontend leverages **Redux Toolkit** and **RTK Query** for efficient client-side caching and automated cache invalidation:
 
-- **Centralized API (`baseApi.js`)**: Base RTK Query slice defining headers, authentication token attachment, and cache tags (`Auth`, `Users`, `Project`, `Blogs`, `Skills`, `Qualifications`, `Reviews`).
-- **Feature APIs (`src/redux/features/*Api.js`)**: Module-specific endpoints (e.g., `getProjects`, `createProject`, `updateProject`, `deleteProject`) injected into `baseApi`.
-- **Redux Persist**: Persists authentication credentials (user identity, access token) in client storage for seamless session continuity.
+- **Centralized API (`baseApi.js`)**: Base RTK Query slice defining headers, the CSRF header, silent session refresh on 401, and cache tags (`Auth`, `Portfolio`, `Messages`).
+- **Feature APIs (`src/redux/features/*Api.js`)**: Module-specific endpoints (`portfolioApi`, `messageApi`, `auth/`) injected into `baseApi`.
+- **Redux Persist**: Persists only non-sensitive user info (name, email, role) for the UI. Session tokens are httpOnly cookies and are never stored in Redux or browser storage.
 - **App Router Directory Structure**:
-  - `(main)`: Public layout for portfolio visitors (Hero, Projects, Blogs, Contact).
+  - `(portfolio)`: The public home page `/` (Hero, Experience, Case Studies, Stack, Practices, Credentials, Contact).
   - `dashboard`: Protected backoffice layout for authorized administrative content curation.
   - `login` & `register`: Authentication portal.
